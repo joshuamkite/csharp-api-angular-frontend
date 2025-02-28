@@ -1,0 +1,29 @@
+services:
+  api:
+    build:
+      context: ./api
+    ports:
+      - "9090:8080"
+    networks:
+      - loan-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      # interval: 10s
+      # timeout: 5s
+      # retries: 5
+      # start_period: 15s
+
+  frontend:
+    build:
+      context: ./frontend
+    ports:
+      - "8501:8501"
+    depends_on:
+      api:
+        condition: service_healthy
+    networks:
+      - loan-network
+
+networks:
+  loan-network:
+    driver: bridge
