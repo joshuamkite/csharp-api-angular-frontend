@@ -39,7 +39,4 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();
 
-// Additional explicit health endpoint configuration
-app.MapHealthChecks("/api/health");
-
 app.Run();
