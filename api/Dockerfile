@@ -7,7 +7,14 @@ RUN dotnet restore
 
 # Copy everything else and build
 COPY . ./
+
+# Generate XML documentation explicitly during build
+RUN dotnet build -c Release /p:GenerateDocumentationFile=true
+
 RUN dotnet publish -c Release -o out
+
+# Make sure XML is copied to output
+RUN find /app -name "*.xml" -type f -exec cp {} /app/out/ \; || true
 
 # Build runtime image
 FROM mcr.microsoft.com/dotnet/aspnet:9.0
