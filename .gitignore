@@ -47,6 +47,7 @@ bld/
 project.lock.json
 project.fragment.lock.json
 artifacts/
+api/LoanManagementApi.xml
 
 # Visual Studio profiler
 *.psess
