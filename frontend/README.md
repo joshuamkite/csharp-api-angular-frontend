@@ -18,6 +18,34 @@ The application follows a modern Angular architecture with:
 - **Reactive Data Handling** - Using Observables for state management
 - **Responsive Design** - Mobile-first approach for all screen sizes
 
+## Technical Task Fulfillment
+
+This application fully implements the requirements from the technical task:
+
+### API Integration
+The frontend communicates with all required API endpoints:
+- **GET /loans** - Fetch all loans (implemented in loan-list component)
+- **GET /loans/{id}** - Get a specific loan by ID (implemented in loan-detail component)
+- **GET /loans?borrowerName={name}** - Search loans by borrower name (implemented in loan-list search functionality)
+- **POST /loans** - Create a new loan (implemented via the "New Loan" navigation button)
+- **DELETE /loans/{id}** - Delete a loan (implemented in the loan-list actions column)
+
+### User Interface Features
+- **Navigation** - Clean navigation bar with "Loan Management" brand and "View Loans"/"New Loan" navigation options
+- **Loan Listing** - Table display of all loans with ID, borrower name, funding amount, and repayment amount
+- **Loan Creation** - Form accessible via the "New Loan" navigation button
+- **Loan Details** - Detailed view of individual loans
+- **Loan Deletion** - Delete functionality with confirmation
+- **Search** - Filter loans by borrower name
+- **Error Handling** - Proper error displays and retry options
+- **Empty States** - User-friendly empty state with create option
+
+### UI Improvements
+- **Streamlined Navigation** - Eliminated redundant "Add New Loan" button from the loan list, keeping only the navigation bar button for a cleaner interface
+- **Responsive Design** - Mobile-first approach with proper layout adjustments for different screen sizes
+- **Visual Feedback** - Loading states, error messages, and success notifications
+- **Material Design** - Consistent styling with Angular Material components
+
 ## Security Considerations
 - **Non-root Docker User** - Running as unprivileged user for security
 - **Non-privileged Port** - Using port 8080 instead of 80 in container
@@ -95,8 +123,8 @@ The application follows a modern Angular architecture with:
 
 #### Nav Header Component
 - **Files**: `src/app/components/nav-header/*`
-- **Purpose**: Main navigation header
-- **Features**: Responsive design, route highlighting
+- **Purpose**: Main navigation header with "Loan Management" brand and navigation options
+- **Features**: Responsive design, route highlighting, "New Loan" button for loan creation
 
 #### Loan List Component
 - **Files**: `src/app/components/loan-list/*`
@@ -174,19 +202,11 @@ npm install
 npm start
 ```
 
-## API Integration
-
-The frontend communicates with the backend via REST API:
-- GET, POST, DELETE operations
-- JSON data format
-- Error handling and user feedback
-- Environment-specific API URLs
-
 ## Potential Improvements
 
-1. Authentication/Authorization
-2. Advanced filtering
-3. Error tracking
+1. Authentication/Authorization with Auth0 (bonus requirement)
+2. Advanced filtering options
+3. Error tracking integration
 4. Unit and E2E testing
 5. Internationalization (i18n)
 6. Accessibility improvements
