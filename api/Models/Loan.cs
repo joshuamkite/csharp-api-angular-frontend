@@ -9,13 +9,13 @@ namespace LoanManagementApi.Models
         /// Unique identifier for the loan
         /// </summary>
         /// <example>L12345</example>
-        public string LoanID { get; set; }
+        public required string LoanID { get; set; }
 
         /// <summary>
         /// Name of the borrower
         /// </summary>
         /// <example>John Smith</example>
-        public string BorrowerName { get; set; }
+        public required string BorrowerName { get; set; }
 
         /// <summary>
         /// Total amount to be repaid by the borrower

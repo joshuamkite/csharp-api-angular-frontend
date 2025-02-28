@@ -1,0 +1,38 @@
+# .NET build output directories
+**/bin/
+**/obj/
+**/out/
+
+# Development files
+**/.vs/
+**/.vscode/
+**/.idea/
+**/.git/
+**/.gitignore
+**/.gitattributes
+**/.github/
+
+# User-specific files
+**/*.user
+**/*.userosscache
+**/*.suo
+**/*.userprefs
+
+# Test results
+**/TestResults/
+
+# NuGet packages
+**/packages/
+**/*.nupkg
+
+# Docker and deployment files
+**/.dockerignore
+**/Dockerfile*
+**/docker-compose*
+
+# Misc
+**/*.log
+**/*.DS_Store
+**/*.cache
+**/*.bak
+**/*.TMP

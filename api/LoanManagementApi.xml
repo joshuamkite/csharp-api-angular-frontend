@@ -1,0 +1,85 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>LoanManagementApi</name>
+    </assembly>
+    <members>
+        <member name="T:LoanManagementApi.Controllers.LoansController">
+            <summary>
+            API Controller for managing loan information
+            </summary>
+        </member>
+        <member name="M:LoanManagementApi.Controllers.LoansController.AddLoan(LoanManagementApi.Models.Loan)">
+            <summary>
+            Creates a new loan record
+            </summary>
+            <param name="loan">The loan information to add</param>
+            <returns>The created loan information</returns>
+            <response code="201">Returns the newly created loan</response>
+            <response code="400">If the loan data is invalid</response>
+        </member>
+        <member name="M:LoanManagementApi.Controllers.LoansController.GetLoanByBorrowerName(System.String)">
+            <summary>
+            Retrieves loans by borrower name
+            </summary>
+            <param name="borrowerName">Name of the borrower to search for</param>
+            <returns>A list of loans for the specified borrower</returns>
+            <response code="200">Returns the loans for the borrower</response>
+            <response code="404">If no loans are found for the borrower</response>
+        </member>
+        <member name="M:LoanManagementApi.Controllers.LoansController.DeleteLoan(System.String)">
+            <summary>
+            Deletes a loan by its ID
+            </summary>
+            <param name="id">The LoanID to delete</param>
+            <returns>No content if successful</returns>
+            <response code="204">If the loan was successfully deleted</response>
+            <response code="404">If no loan with the specified ID was found</response>
+        </member>
+        <member name="M:LoanManagementApi.Controllers.LoansController.GetLoanById(System.String)">
+            <summary>
+            Retrieves a loan by its ID
+            </summary>
+            <param name="id">The LoanID to search for</param>
+            <returns>The loan with the specified ID</returns>
+            <response code="200">Returns the loan with the specified ID</response>
+            <response code="404">If no loan with the specified ID was found</response>
+        </member>
+        <member name="M:LoanManagementApi.Controllers.LoansController.GetAllLoans">
+            <summary>
+            Retrieves all loans in the system
+            </summary>
+            <returns>A list of all loans</returns>
+            <response code="200">Returns the complete list of loans</response>
+        </member>
+        <member name="T:LoanManagementApi.Models.Loan">
+            <summary>
+            Represents a loan record in the system
+            </summary>
+        </member>
+        <member name="P:LoanManagementApi.Models.Loan.LoanID">
+            <summary>
+            Unique identifier for the loan
+            </summary>
+            <example>L12345</example>
+        </member>
+        <member name="P:LoanManagementApi.Models.Loan.BorrowerName">
+            <summary>
+            Name of the borrower
+            </summary>
+            <example>John Smith</example>
+        </member>
+        <member name="P:LoanManagementApi.Models.Loan.RepaymentAmount">
+            <summary>
+            Total amount to be repaid by the borrower
+            </summary>
+            <example>15000.00</example>
+        </member>
+        <member name="P:LoanManagementApi.Models.Loan.FundingAmount">
+            <summary>
+            Initial amount funded for the loan
+            </summary>
+            <example>10000.00</example>
+        </member>
+    </members>
+</doc>

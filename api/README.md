@@ -86,6 +86,54 @@ Once running, the API is available at:
 
 Note that this API uses an in-memory data store, so all data will be lost when the application stops running. This is per the requirements of the coding challenge.
 
+## Testing
+
+The solution includes a comprehensive test suite using xUnit. The tests cover:
+
+- Adding loans with valid and invalid data
+- Retrieving loans by ID
+- Retrieving loans by borrower name
+- Deleting loans
+- Getting all loans
+
+To run the tests:
+
+```bash
+# Navigate to the test project directory
+cd LoanManagementApi.Tests
+
+# Run the tests
+dotnet test
+
+# On Mac with Homebrew installation, you may need to use the explicit path
+/opt/homebrew/opt/dotnet/bin/dotnet test
+
+# For verbose output with detailed test information
+dotnet test --logger "console;verbosity=detailed"
+```
+
+For more verbose output, which can be helpful for debugging, you can add various verbosity levels:
+- `minimal` - Shows basic test results
+- `normal` - Shows summary information
+- `detailed` - Shows all test output information
+- `diagnostic` - Shows full diagnostic information including internal xUnit messages
+
+Example of diagnostic output:
+```bash
+dotnet test --logger "console;verbosity=diagnostic"
+```
+
+All 9 tests should pass successfully, validating the functionality of the API endpoints:
+- ✅ Creating loans with valid data
+- ✅ Validating required fields
+- ✅ Retrieving loans by ID
+- ✅ Handling non-existent loan IDs
+- ✅ Retrieving loans by borrower name
+- ✅ Retrieving all loans
+- ✅ Deleting loans
+
+As a result of the testing process, we identified and fixed nullability warnings in the `Loan` model by adding the `required` modifier to string properties, enhancing the robustness of the code.
+
 ## Health Checks
 
 A health check endpoint is available at `http://localhost:9090/health` which returns a 200 OK response when the service is running properly. This can be used for container orchestration and monitoring.
@@ -98,6 +146,6 @@ For a production environment, the following improvements could be implemented:
 * Implement global exception handling middleware
 * Add authentication/authorization mechanisms
 * Replace in-memory storage with a persistent database
-* Add input validation and error handling
+* Add more input validation and error handling
 * Implement logging and monitoring
-* Add unit and integration tests
+* Add integration tests to complement the existing unit tests
