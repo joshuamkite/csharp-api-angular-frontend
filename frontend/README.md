@@ -1,77 +1,227 @@
-# Loan Management Client
+# Loan Management System - Frontend Documentation
 
-This is an Angular-based frontend application for the Loan Management API. It provides a user-friendly interface to interact with all API endpoints.
+## Project Overview
+This Angular application serves as the frontend for a Loan Management API. It provides a responsive, user-friendly interface to manage loan data while implementing modern Angular patterns and security best practices.
 
-## Features
+## Technology Stack
+- **Angular 19.1.7** - Latest version with performance improvements
+- **Angular Material** - For modern, accessible UI components
+- **RxJS** - For reactive programming patterns
+- **TypeScript 5.5+** - For type safety and modern language features
+- **Docker** - For containerization and easy deployment
+- **Nginx** - As a lightweight web server for production
 
-- View all loans with sorting and pagination
-- Search loans by borrower name
-- Add new loans with validation
-- View loan details with calculated metrics (interest, interest rate)
-- Delete loans with confirmation
-- Responsive design that works on all devices
-- Modern UI with Angular Material components
+## Architecture Overview
+The application follows a modern Angular architecture with:
+- **Standalone Components** - Latest Angular pattern for better modularity
+- **Service-based Data Management** - Centralized services for API communication
+- **Reactive Data Handling** - Using Observables for state management
+- **Responsive Design** - Mobile-first approach for all screen sizes
 
-## Prerequisites
+## Security Considerations
+- **Non-root Docker User** - Running as unprivileged user for security
+- **Non-privileged Port** - Using port 8080 instead of 80 in container
+- **Input Validation** - Form validation to prevent injection attacks
+- **HTTPOnly Cookies** - For secure authentication (when implemented)
+- **Docker Multi-stage Builds** - Minimizing attack surface in final image
 
-- Node.js 18+ (LTS recommended)
-- npm 9+
-- Angular CLI 19+
+## Core Files and Components
 
-## Development Setup
+### Configuration Files
 
-### Install dependencies
+#### `angular.json`
+- Defines project structure and build configurations
+- Configures Angular Material themes and assets
+- Sets up production optimization settings
 
-```bash
-npm install
-```
+#### `tsconfig.json` & Related Files
+- TypeScript configuration for Angular
+- Path mappings and compiler options
+- Strict type checking enabled
 
-### Start development server
+#### `package.json`
+- Defines dependencies and scripts
+- Angular 19.1.7 and Material UI libraries
+- TypeScript 5.5+ as required by Angular 19
 
-```bash
-ng serve
-```
+#### `Dockerfile`
+- Multi-stage build for optimized image size
+- First stage builds Angular app with Node.js
+- Second stage serves with Nginx
+- Configured to run as non-root user
 
-This will start a development server at http://localhost:4200.
+#### `nginx.conf`
+- Proxy configuration for API communication
+- Proper caching headers for static assets
+- Angular routing support (HTML5 history mode)
+- Gzip compression for better performance
 
-## Building for Production
+### Core Application Files
 
-```bash
-ng build --configuration production
-```
+#### `src/main.ts`
+- Application entry point
+- Bootstraps the Angular application
+- Applies global configurations
+
+#### `src/app/app.config.ts`
+- Central application configuration
+- Provides services and modules
+- Configures routing and animations
+
+#### `src/app/app.routes.ts`
+- Defines application routes
+- Maps paths to components
+- Handles redirects and wild card routes
+
+#### `src/app/app.component.ts`
+- Root component that bootstraps other components
+- Minimal, focused on layout and routing
+- Uses standalone component pattern
+
+### Models and Services
+
+#### `src/app/models/loan.model.ts`
+- TypeScript interface for Loan data
+- Defines shape of loan entities
+- Ensures type safety across application
+
+#### `src/app/services/loan.service.ts`
+- Centralized API communication
+- Uses Angular HttpClient for requests
+- Implements CRUD operations for loans
+- Error handling and response mapping
+
+### Feature Components
+
+#### Nav Header Component
+- **Files**: `src/app/components/nav-header/*`
+- **Purpose**: Main navigation header
+- **Features**: Responsive design, route highlighting
+
+#### Loan List Component
+- **Files**: `src/app/components/loan-list/*`
+- **Purpose**: Displays all loans in a table
+- **Features**: Sorting, filtering, pagination, search, delete functionality
+
+#### Loan Form Component
+- **Files**: `src/app/components/loan-form/*`
+- **Purpose**: Create new loans with validation
+- **Features**: Real-time validation, error messages, form submission
+
+#### Loan Detail Component
+- **Files**: `src/app/components/loan-detail/*`
+- **Purpose**: View detailed loan information
+- **Features**: Display calculated fields (interest rate), deletion
+
+### Environment Configuration
+
+#### `src/environments/*`
+- Environment-specific configuration
+- API URL configuration for dev/prod
+- Feature flags and settings
+
+## Design Patterns Used
+
+### Reactive Forms
+Used in the loan form for robust validation and state management.
+
+### Observable Pattern
+Used throughout for asynchronous operations and data streams.
+
+### Container/Presentation Pattern
+Components are structured to separate data management from presentation.
+
+### Standalone Components
+Modern Angular pattern used to reduce bundle size and improve modularity.
+
+## Styling Approach
+
+### SCSS Architecture
+- Component-scoped styles for isolation
+- Global styles for consistency
+- Angular Material theming used for cohesive design
+
+### Responsive Design
+- Mobile-first approach
+- Flexbox and Grid for layouts
+- Material breakpoints for consistent responsiveness
 
 ## Docker Deployment
 
-The application is dockerized for easy deployment:
+The application is containerized using Docker for easy deployment:
 
 ```bash
 # Build the Docker image
-docker build -t loan-management-client .
+docker build -t loan-management-frontend .
 
 # Run the container
-docker run -p 80:80 loan-management-client
+docker run -p 80:8080 loan-management-frontend
 ```
 
-## Using with Docker Compose
-
-The project includes a docker-compose.yml file that will start both the API and the frontend:
-
+With Docker Compose:
 ```bash
 docker-compose up -d
 ```
 
-This will:
-- Build and start the API at http://localhost:9090
-- Build and start the frontend at http://localhost:80
-- Configure proper networking between the services
+## Development Workflow
 
-## Project Structure
+To run locally:
+```bash
+# Install dependencies
+npm install
 
-- `src/app/components`: Angular components organized by feature
-- `src/app/models`: TypeScript interfaces for data models
-- `src/app/services`: Services for API communication
-- `src/environments`: Environment configuration
+# Start development server
+npm start
+```
 
 ## API Integration
 
-The application communicates with the Loan Management API through the LoanService. The API URL is configurable in the environment files.
+The frontend communicates with the backend via REST API:
+- GET, POST, DELETE operations
+- JSON data format
+- Error handling and user feedback
+- Environment-specific API URLs
+
+## Potential Improvements
+
+1. Authentication/Authorization
+2. Advanced filtering
+3. Error tracking
+4. Unit and E2E testing
+5. Internationalization (i18n)
+6. Accessibility improvements
+7. State management (NGRX/NGXS)
+
+## Project Structure
+```
+frontend/
+├── src/
+│   ├── app/
+│   │   ├── components/
+│   │   │   ├── loan-list/
+│   │   │   ├── loan-form/
+│   │   │   ├── loan-detail/
+│   │   │   └── nav-header/
+│   │   ├── models/
+│   │   │   └── loan.model.ts
+│   │   ├── services/
+│   │   │   └── loan.service.ts
+│   │   ├── app.component.ts
+│   │   ├── app.component.html
+│   │   ├── app.component.scss
+│   │   ├── app.config.ts
+│   │   └── app.routes.ts
+│   ├── assets/
+│   ├── environments/
+│   │   ├── environment.ts
+│   │   └── environment.prod.ts
+│   ├── index.html
+│   ├── main.ts
+│   └── styles.scss
+├── Dockerfile
+├── nginx.conf
+├── package.json
+├── tsconfig.json
+├── tsconfig.app.json
+└── tsconfig.spec.json
+```
