@@ -1,25 +1,33 @@
+
 services:
+  # Backend API service
   api:
     build:
       context: ./api
+      dockerfile: Dockerfile
     ports:
       - "9090:8080"
-    networks:
-      - loan-network
+    container_name: loan-management-api
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    restart: unless-stopped
 
+  # Frontend Angular application
   frontend:
     build:
       context: ./frontend
+      dockerfile: Dockerfile
     ports:
-      - "8501:8501"
+      - "80:8080"
+    container_name: loan-management-frontend
     depends_on:
-      api:
-        condition: service_healthy
-    networks:
-      - loan-network
+      - api
+    restart: unless-stopped
 
 networks:
-  loan-network:
-    driver: bridge
+  default:
+    name: loan-management-network

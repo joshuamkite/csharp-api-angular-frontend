@@ -1,0 +1,40 @@
+/* Use modern approach for Angular Material styling */
+@use '@angular/material' as mat;
+
+/* Global Styles */
+html, body { height: 100%; }
+body { 
+  margin: 0; 
+  font-family: Roboto, "Helvetica Neue", sans-serif; 
+  background-color: #f5f5f5;
+}
+
+/* Card styling */
+.mat-mdc-card {
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1) !important;
+  border-radius: 8px !important;
+  margin-bottom: 16px;
+}
+
+/* Button styling */
+.mat-mdc-raised-button {
+  border-radius: 4px;
+}
+
+/* Table styling */
+.mat-mdc-table {
+  width: 100%;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1) !important;
+  border-radius: 8px !important;
+  overflow: hidden;
+}
+
+.mat-mdc-header-cell {
+  font-weight: bold;
+  color: rgba(0, 0, 0, 0.87);
+  background-color: #f5f5f5;
+}
+
+.mat-mdc-row:hover {
+  background-color: rgba(0, 0, 0, 0.04);
+}

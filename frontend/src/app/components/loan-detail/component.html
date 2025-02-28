@@ -1,0 +1,63 @@
+<div class="container">
+    <div class="header">
+        <button mat-button (click)="goBack()">
+            <mat-icon>arrow_back</mat-icon> Back to Loans
+        </button>
+    </div>
+
+    <div *ngIf="isLoading" class="loading-container">
+        <mat-spinner diameter="50"></mat-spinner>
+        <p>Loading loan details...</p>
+    </div>
+
+    <div *ngIf="errorMessage" class="error-container">
+        <mat-icon color="warn">error</mat-icon>
+        <p>{{ errorMessage }}</p>
+        <button mat-raised-button color="primary" (click)="goBack()">Back to Loans</button>
+    </div>
+
+    <div *ngIf="!isLoading && !errorMessage && loan" class="loan-details">
+        <h1>Loan Details</h1>
+
+        <mat-card>
+            <mat-card-content>
+                <div class="detail-row">
+                    <div class="detail-label">Loan ID:</div>
+                    <div class="detail-value">{{ loan.loanID }}</div>
+                </div>
+
+                <div class="detail-row">
+                    <div class="detail-label">Borrower Name:</div>
+                    <div class="detail-value">{{ loan.borrowerName }}</div>
+                </div>
+
+                <div class="detail-row">
+                    <div class="detail-label">Funding Amount:</div>
+                    <div class="detail-value">{{ formatCurrency(loan.fundingAmount) }}</div>
+                </div>
+
+                <div class="detail-row">
+                    <div class="detail-label">Repayment Amount:</div>
+                    <div class="detail-value">{{ formatCurrency(loan.repaymentAmount) }}</div>
+                </div>
+
+                <div class="detail-row">
+                    <div class="detail-label">Interest:</div>
+                    <div class="detail-value">{{ formatCurrency(loan.repaymentAmount - loan.fundingAmount) }}</div>
+                </div>
+
+                <div class="detail-row">
+                    <div class="detail-label">Interest Rate:</div>
+                    <div class="detail-value">{{ ((loan.repaymentAmount / loan.fundingAmount - 1) * 100).toFixed(2) }}%
+                    </div>
+                </div>
+            </mat-card-content>
+
+            <mat-card-actions align="end">
+                <button mat-raised-button color="warn" (click)="confirmDelete()">
+                    <mat-icon>delete</mat-icon> Delete Loan
+                </button>
+            </mat-card-actions>
+        </mat-card>
+    </div>
+</div>

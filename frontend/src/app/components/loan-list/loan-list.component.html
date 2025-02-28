@@ -1,0 +1,85 @@
+<div class="container">
+  <div class="header">
+    <h1>Loans</h1>
+    <button mat-raised-button color="primary" routerLink="/loans/new">
+      <mat-icon>add</mat-icon>
+      Add New Loan
+    </button>
+  </div>
+
+  <mat-card class="search-card">
+    <mat-card-content>
+      <div class="search-form">
+        <mat-form-field appearance="outline" class="search-field">
+          <mat-label>Search by Borrower Name</mat-label>
+          <input matInput [(ngModel)]="searchTerm" placeholder="Enter borrower name">
+          <button *ngIf="searchTerm" matSuffix mat-icon-button aria-label="Clear" (click)="clearSearch()">
+            <mat-icon>close</mat-icon>
+          </button>
+        </mat-form-field>
+        <button mat-raised-button color="primary" (click)="applyFilter()">Search</button>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <div *ngIf="isLoading" class="loading-container">
+    <mat-spinner diameter="50"></mat-spinner>
+    <p>Loading loans...</p>
+  </div>
+
+  <div *ngIf="errorMessage" class="error-container">
+    <mat-icon color="warn">error</mat-icon>
+    <p>{{ errorMessage }}</p>
+    <button mat-raised-button color="primary" (click)="loadLoans()">Retry</button>
+  </div>
+
+  <div *ngIf="!isLoading && !errorMessage">
+    <div *ngIf="loans.length === 0" class="no-data-container">
+      <mat-icon>info</mat-icon>
+      <p>No loans found</p>
+      <button mat-raised-button color="primary" routerLink="/loans/new">Create New Loan</button>
+    </div>
+
+    <table mat-table [dataSource]="loans" *ngIf="loans.length > 0" class="mat-elevation-z8">
+      <!-- Loan ID Column -->
+      <ng-container matColumnDef="loanID">
+        <th mat-header-cell *matHeaderCellDef> Loan ID </th>
+        <td mat-cell *matCellDef="let loan"> {{ loan.loanID }} </td>
+      </ng-container>
+
+      <!-- Borrower Name Column -->
+      <ng-container matColumnDef="borrowerName">
+        <th mat-header-cell *matHeaderCellDef> Borrower Name </th>
+        <td mat-cell *matCellDef="let loan"> {{ loan.borrowerName }} </td>
+      </ng-container>
+
+      <!-- Funding Amount Column -->
+      <ng-container matColumnDef="fundingAmount">
+        <th mat-header-cell *matHeaderCellDef> Funding Amount </th>
+        <td mat-cell *matCellDef="let loan"> {{ formatCurrency(loan.fundingAmount) }} </td>
+      </ng-container>
+
+      <!-- Repayment Amount Column -->
+      <ng-container matColumnDef="repaymentAmount">
+        <th mat-header-cell *matHeaderCellDef> Repayment Amount </th>
+        <td mat-cell *matCellDef="let loan"> {{ formatCurrency(loan.repaymentAmount) }} </td>
+      </ng-container>
+
+      <!-- Actions Column -->
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef> Actions </th>
+        <td mat-cell *matCellDef="let loan">
+          <button mat-icon-button color="primary" (click)="viewLoanDetails(loan)" matTooltip="View Details">
+            <mat-icon>visibility</mat-icon>
+          </button>
+          <button mat-icon-button color="warn" (click)="confirmDelete(loan)" matTooltip="Delete">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+  </div>
+</div>
