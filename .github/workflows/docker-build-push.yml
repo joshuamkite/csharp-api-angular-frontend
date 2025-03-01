@@ -19,10 +19,9 @@ on:
         description: 'Path to the Dockerfile, relative to working-directory'
         default: 'Dockerfile'
       registry-alias:
-        required: false
+        required: true
         type: string
-        description: 'ECR Public registry alias (leave empty to use default)'
-        default: ''
+        description: 'ECR Public registry alias from Terraform output'
     secrets:
       role-to-assume:
         required: true
@@ -61,7 +60,7 @@ jobs:
       id: meta
       uses: docker/metadata-action@v5
       with:
-        images: ${{ steps.login-ecr-public.outputs.registry }}/${{ inputs.registry-alias != '' && format('{0}/', inputs.registry-alias) || '' }}${{ inputs.ecr-repository }}
+        images: ${{ steps.login-ecr-public.outputs.registry }}/${{ inputs.registry-alias }}/${{ inputs.ecr-repository }}
         tags: |
           type=sha,format=short
           type=ref,event=branch

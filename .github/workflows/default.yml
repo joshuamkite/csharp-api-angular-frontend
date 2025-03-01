@@ -59,6 +59,7 @@ jobs:
     with:
       working-directory: './api'
       ecr-repository: 'loan-management-api'
+      registry-alias: ${{ vars.ecr_registry_alias }}
     secrets:
       role-to-assume: ${{ secrets.aws_role_to_assume }}
 
@@ -73,5 +74,6 @@ jobs:
     with:
       working-directory: './frontend'
       ecr-repository: 'loan-management-frontend'
+      registry-alias: ${{ vars.ecr_registry_alias }}
     secrets:
       role-to-assume: ${{ secrets.aws_role_to_assume }}

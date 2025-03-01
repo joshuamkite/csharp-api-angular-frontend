@@ -13,3 +13,8 @@ output "ecr_repository_urls" {
   value       = { for name, repo in aws_ecrpublic_repository.repositories : name => repo.repository_uri }
   description = "ECR Public Repository URLs"
 }
+
+output "ecr_registry_alias" {
+  value       = split("/", values(aws_ecrpublic_repository.repositories)[0].repository_uri)[1]
+  description = "ECR Public Registry Alias"
+}

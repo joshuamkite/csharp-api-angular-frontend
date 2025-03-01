@@ -44,6 +44,7 @@ No modules.
 
 | Name | Description |
 |------|-------------|
+| <a name="output_ecr_registry_alias"></a> [ecr\_registry\_alias](#output\_ecr\_registry\_alias) | ECR Public Registry Alias |
 | <a name="output_ecr_repository_urls"></a> [ecr\_repository\_urls](#output\_ecr\_repository\_urls) | ECR Public Repository URLs |
 | <a name="output_github_actions_role_arn"></a> [github\_actions\_role\_arn](#output\_github\_actions\_role\_arn) | GitHub Actions Role ARN to use in workflow |
 | <a name="output_github_oidc_provider_arn"></a> [github\_oidc\_provider\_arn](#output\_github\_oidc\_provider\_arn) | GitHub OIDC Provider ARN |
