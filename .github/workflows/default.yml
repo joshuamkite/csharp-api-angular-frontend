@@ -48,28 +48,30 @@ jobs:
     - name: Run tests
       run: npm test -- --watch=false --browsers=ChromeHeadless
 
-  # API Build - ONLY depends on API tests
+  # API Build & Push to ECR
   build-api:
     needs: test-api
     if: ${{ needs.test-api.outputs.status == 'success' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch') }}
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./api
-    steps:
-    - uses: actions/checkout@v4
-    - name: Build API Docker image
-      run: docker build -t loan-management-api:${{ github.sha }} .
+    uses: ./.github/workflows/docker-build-push.yml
+    permissions:
+      id-token: write
+      contents: read
+    with:
+      working-directory: './api'
+      ecr-repository: 'loan-management-api'
+      aws-region: ${{ vars.AWS_REGION }}
+      role-to-assume: ${{ vars.AWS_ROLE_TO_ASSUME }}
 
-  # Frontend Build - ONLY depends on Frontend tests
+  # Frontend Build & Push to ECR
   build-frontend:
     needs: test-frontend
     if: ${{ needs.test-frontend.outputs.status == 'success' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch') }}
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./frontend
-    steps:
-    - uses: actions/checkout@v4
-    - name: Build Frontend Docker image
-      run: docker build -t loan-management-frontend:${{ github.sha }} .
+    uses: ./.github/workflows/docker-build-push.yml
+    permissions:
+      id-token: write
+      contents: read
+    with:
+      working-directory: './frontend'
+      ecr-repository: 'loan-management-frontend'
+      aws-region: ${{ vars.AWS_REGION }}
+      role-to-assume: ${{ vars.AWS_ROLE_TO_ASSUME }}

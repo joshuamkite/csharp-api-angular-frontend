@@ -1,0 +1,78 @@
+name: Build and Push Docker Image to ECR
+
+# This is a reusable workflow that builds and pushes a Docker image to Amazon ECR using OIDC authentication
+on:
+  workflow_call:
+    inputs:
+      working-directory:
+        required: true
+        type: string
+        description: 'Directory containing the Dockerfile'
+      ecr-repository:
+        required: true
+        type: string
+        description: 'Name of the ECR repository'
+      dockerfile-path:
+        required: false
+        type: string
+        description: 'Path to the Dockerfile, relative to working-directory'
+        default: 'Dockerfile'
+      aws-region:
+        required: false
+        type: string
+        description: 'AWS region where the ECR repository is located'
+        default: 'us-east-1'
+      role-to-assume:
+        required: true
+        type: string
+        description: 'ARN of the AWS IAM role to assume'
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ${{ inputs.working-directory }}
+    
+    # Add permissions needed for OIDC authentication
+    permissions:
+      id-token: write
+      contents: read
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Configure AWS credentials with OIDC
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        role-to-assume: ${{ inputs.role-to-assume }}
+        aws-region: ${{ inputs.aws-region }}
+    
+    - name: Login to Amazon ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v2
+    
+    - name: Extract metadata for Docker
+      id: meta
+      uses: docker/metadata-action@v5
+      with:
+        images: ${{ steps.login-ecr.outputs.registry }}/${{ inputs.ecr-repository }}
+        tags: |
+          type=sha,format=short
+          type=ref,event=branch
+          type=raw,value=latest,enable=${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master' }}
+    
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+    
+    - name: Build and push Docker image
+      uses: docker/build-push-action@v5
+      with:
+        context: ${{ inputs.working-directory }}
+        file: ${{ inputs.working-directory }}/${{ inputs.dockerfile-path }}
+        push: true
+        tags: ${{ steps.meta.outputs.tags }}
+        labels: ${{ steps.meta.outputs.labels }}
+        cache-from: type=gha
+        cache-to: type=gha,mode=max
