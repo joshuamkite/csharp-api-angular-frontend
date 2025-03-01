@@ -1,0 +1,88 @@
+# Default values for the Loan Management application
+global:
+  environment: production
+
+# ServiceAccount configuration
+serviceAccount:
+  create: false
+  annotations: {}
+  name: ""
+
+api:
+  name: loan-management-api
+  replicaCount: 1
+  image:
+    repository: "public.ecr.aws/o7k2q9z1/loan-management-api"
+    tag: latest
+    pullPolicy: IfNotPresent
+  service:
+    type: LoadBalancer
+    port: 8080
+    targetPort: 8080
+    annotations:
+      service.beta.kubernetes.io/aws-load-balancer-type: "nlb"
+      service.beta.kubernetes.io/aws-load-balancer-internal: "false"
+  resources:
+    limits:
+      cpu: 500m
+      memory: 512Mi
+    requests:
+      cpu: 100m
+      memory: 256Mi
+  livenessProbe:
+    httpGet:
+      path: /health
+      port: 8080
+    initialDelaySeconds: 30
+    periodSeconds: 30
+    timeoutSeconds: 10
+    failureThreshold: 3
+  readinessProbe:
+    httpGet:
+      path: /health
+      port: 8080
+    initialDelaySeconds: 10
+    periodSeconds: 10
+    timeoutSeconds: 5
+    failureThreshold: 3
+
+frontend:
+  name: loan-management-frontend
+  replicaCount: 1
+  image:
+    repository: "public.ecr.aws/o7k2q9z1/loan-management-frontend"
+    tag: latest
+    pullPolicy: IfNotPresent
+  service:
+    type: LoadBalancer
+    port: 80
+    targetPort: 8080
+    annotations:
+      service.beta.kubernetes.io/aws-load-balancer-type: "nlb"
+      service.beta.kubernetes.io/aws-load-balancer-internal: "false"
+  resources:
+    limits:
+      cpu: 300m
+      memory: 384Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
+
+# Ingress is disabled by default as we're using LoadBalancer
+ingress:
+  enabled: false
+  className: "nginx"
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+  hosts:
+    - host: loan-management.example.com
+      paths:
+        - path: /
+          pathType: Prefix
+          serviceName: loan-management-frontend
+          servicePort: 80
+        - path: /api
+          pathType: Prefix
+          serviceName: loan-management-api
+          servicePort: 8080

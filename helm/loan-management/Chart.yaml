@@ -1,0 +1,13 @@
+apiVersion: v2
+name: loan-management
+description: A Helm chart for Loan Management application
+type: application
+version: 0.1.0
+appVersion: "1.0.0"
+icon: https://raw.githubusercontent.com/cncf/artwork/master/other/cncf/icon/color/cncf-icon-color.svg
+keywords:
+  - loan
+  - management
+maintainers:
+  - name: Your Name
+    email: your.email@example.com

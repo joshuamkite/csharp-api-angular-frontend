@@ -1,0 +1,33 @@
+Thank you for installing {{ .Chart.Name }}.
+
+Your Loan Management application has been deployed with the following components:
+
+1. API Service: {{ .Values.api.name }}
+   - Internal URL: {{ .Values.api.name }}:{{ .Values.api.service.port }}
+   {{- if eq .Values.api.service.type "LoadBalancer" }}
+   - Once the load balancer is provisioned, access the API using the external IP:
+     kubectl get svc {{ .Values.api.name }} --output jsonpath='{.status.loadBalancer.ingress[0].hostname}'
+   {{- end }}
+
+2. Frontend Service: {{ .Values.frontend.name }}
+   - Internal URL: {{ .Values.frontend.name }}:{{ .Values.frontend.service.port }}
+   {{- if eq .Values.frontend.service.type "LoadBalancer" }}
+   - Once the load balancer is provisioned, access the frontend using the external IP:
+     kubectl get svc {{ .Values.frontend.name }} --output jsonpath='{.status.loadBalancer.ingress[0].hostname}'
+   {{- end }}
+
+{{- if .Values.ingress.enabled }}
+3. External Access:
+   {{- range .Values.ingress.hosts }}
+   - http://{{ .host }}
+   {{- end }}
+{{- else }}
+3. No ingress has been configured.
+   {{- if or (eq .Values.api.service.type "ClusterIP") (eq .Values.frontend.service.type "ClusterIP") }}
+   To access services of type ClusterIP, you need to set up port forwarding:
+   - For API: kubectl port-forward svc/{{ .Values.api.name }} {{ .Values.api.service.port }}:{{ .Values.api.service.port }}
+   - For Frontend: kubectl port-forward svc/{{ .Values.frontend.name }} {{ .Values.frontend.service.port }}:{{ .Values.frontend.service.port }}
+   {{- end }}
+{{- end }}
+
+For more information about the application, please refer to the documentation.
