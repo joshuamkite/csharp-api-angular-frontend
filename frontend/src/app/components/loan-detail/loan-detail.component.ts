@@ -34,7 +34,7 @@ export class LoanDetailComponent implements OnInit {
     private router: Router,
     private loanService: LoanService,
     private snackBar: MatSnackBar
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id');
@@ -44,6 +44,12 @@ export class LoanDetailComponent implements OnInit {
       this.errorMessage = 'No loan ID provided';
       this.isLoading = false;
     }
+  }
+
+
+  calculateInterestRate(principal: number, total: number): string {
+    const rate = ((total - principal) / principal) * 100;
+    return rate.toFixed(2) + '%';
   }
 
   loadLoan(id: string): void {
@@ -70,7 +76,7 @@ export class LoanDetailComponent implements OnInit {
     if (!this.loan) return;
 
     const confirm = window.confirm(`Are you sure you want to delete the loan with ID ${this.loan.loanID}?`);
-    
+
     if (confirm) {
       this.deleteLoan(this.loan.loanID);
     }

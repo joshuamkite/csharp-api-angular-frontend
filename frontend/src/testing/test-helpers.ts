@@ -1,9 +1,11 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { RouterTestingModule } from '@angular/router/testing';
+import { provideRouter } from '@angular/router';
+import { RouterTestingHarness } from '@angular/router/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting, HttpTestingController } from '@angular/common/http/testing';
 
 // Common Angular Material imports
 import { MatCardModule } from '@angular/material/card';
@@ -16,14 +18,12 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 // Re-export testing utilities
 export * from '@angular/core/testing';
-export { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
-export { RouterTestingModule } from '@angular/router/testing';
+export { HttpTestingController } from '@angular/common/http/testing';
+export { RouterTestingHarness } from '@angular/router/testing';
 
 // Common testing modules most components will need
 export const CommonTestModules = [
   NoopAnimationsModule,
-  RouterTestingModule,
-  HttpClientTestingModule,
   FormsModule,
   ReactiveFormsModule,
   MatSnackBarModule,
@@ -45,7 +45,12 @@ export function configureTestingModule(config: {
   return TestBed.configureTestingModule({
     declarations: config.declarations || [],
     imports: [...CommonTestModules, ...(config.imports || [])],
-    providers: config.providers || []
+    providers: [
+      ...(config.providers || []),
+      provideRouter([]), // Add empty routes by default
+      provideHttpClient(),
+      provideHttpClientTesting()
+    ]
   });
 }
 

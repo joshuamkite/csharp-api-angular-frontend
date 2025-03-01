@@ -101,3 +101,7 @@ Desktop.ini
 # Local secrets files
 appsettings.*.json
 !appsettings.Example.json
+
+# Angular
+node_modules/
+.angular/

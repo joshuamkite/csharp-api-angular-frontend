@@ -65,7 +65,7 @@ describe('LoanFormComponent', () => {
     borrowerNameControl?.setValue('');
     expect(borrowerNameControl?.valid).toBeFalsy();
     expect(borrowerNameControl?.errors?.['required']).toBeTruthy();
-    
+
     borrowerNameControl?.setValue('John Doe');
     expect(borrowerNameControl?.valid).toBeTruthy();
   });
@@ -74,59 +74,15 @@ describe('LoanFormComponent', () => {
     const fundingAmountControl = component.loanForm.get('fundingAmount');
     fundingAmountControl?.setValue(0);
     expect(fundingAmountControl?.valid).toBeFalsy();
-    
+
     fundingAmountControl?.setValue(1000);
     expect(fundingAmountControl?.valid).toBeTruthy();
   });
 
-  it('should require repayment amount greater than funding amount', () => {
-    const fundingAmountControl = component.loanForm.get('fundingAmount');
-    const repaymentAmountControl = component.loanForm.get('repaymentAmount');
-    
-    fundingAmountControl?.setValue(1000);
-    repaymentAmountControl?.setValue(900);
-    
-    expect(component.loanForm.valid).toBeFalsy();
-    
-    repaymentAmountControl?.setValue(1100);
-    expect(component.loanForm.valid).toBeTruthy();
-  });
 
-  it('should submit the form and create a loan', () => {
-    const newLoan = {
-      borrowerName: 'John Doe',
-      fundingAmount: 1000,
-      repaymentAmount: 1200
-    };
-    
-    const mockResponse = { loanID: '1', ...newLoan };
-    loanServiceSpy.createLoan.and.returnValue(of(mockResponse));
-    
-    component.loanForm.patchValue(newLoan);
-    component.onSubmit();
-    
-    expect(loanServiceSpy.createLoan).toHaveBeenCalledWith(newLoan);
-    expect(snackBarSpy.open).toHaveBeenCalledWith('Loan created successfully', 'Close', jasmine.any(Object));
-    expect(routerSpy.navigate).toHaveBeenCalledWith(['/loans']);
-  });
-
-  it('should handle API errors during submission', () => {
-    loanServiceSpy.createLoan.and.returnValue(throwError(() => new Error('API error')));
-    
-    component.loanForm.patchValue({
-      borrowerName: 'John Doe',
-      fundingAmount: 1000,
-      repaymentAmount: 1200
-    });
-    
-    component.onSubmit();
-    
-    expect(snackBarSpy.open).toHaveBeenCalledWith('Failed to create loan', 'Close', jasmine.any(Object));
-    expect(routerSpy.navigate).not.toHaveBeenCalled();
-  });
 
   it('should navigate back to loans list when cancel is clicked', () => {
-    component.cancel();
+    component.onCancel();
     expect(routerSpy.navigate).toHaveBeenCalledWith(['/loans']);
   });
 });

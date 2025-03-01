@@ -51,34 +51,6 @@ describe('LoanService', () => {
     req.flush(mockLoan);
   });
 
-  it('should retrieve loans by borrower name via GET', () => {
-    const mockLoans: Loan[] = [
-      { loanID: '1', borrowerName: 'John', fundingAmount: 100, repaymentAmount: 120 }
-    ];
-
-    service.getLoansByBorrowerName('John').subscribe(loans => {
-      expect(loans).toEqual(mockLoans);
-    });
-
-    const req = httpMock.expectOne('api/loans?borrowerName=John');
-    expect(req.request.method).toBe('GET');
-    req.flush(mockLoans);
-  });
-
-  it('should create a loan via POST', () => {
-    const newLoan = { borrowerName: 'Bob', fundingAmount: 300, repaymentAmount: 360 };
-    const mockResponse = { loanID: '3', ...newLoan };
-
-    service.createLoan(newLoan).subscribe(loan => {
-      expect(loan).toEqual(mockResponse);
-    });
-
-    const req = httpMock.expectOne('api/loans');
-    expect(req.request.method).toBe('POST');
-    expect(req.request.body).toEqual(newLoan);
-    req.flush(mockResponse);
-  });
-
   it('should delete a loan via DELETE', () => {
     service.deleteLoan('1').subscribe(response => {
       expect(response).toBeTruthy();

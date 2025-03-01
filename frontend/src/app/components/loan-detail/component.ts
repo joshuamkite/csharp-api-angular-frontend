@@ -87,4 +87,10 @@ export class LoanDetailComponent implements OnInit {
             currency: 'USD'
         }).format(amount);
     }
+
+    calculateInterestRate(principal: number, total: number): string {
+        const rate = ((total - principal) / principal) * 100;
+        return rate.toFixed(2) + '%';
+    }
+
 }

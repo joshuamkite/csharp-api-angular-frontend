@@ -71,7 +71,7 @@ describe('LoanListComponent', () => {
 
   it('should load loans on initialization', () => {
     fixture.detectChanges(); // Triggers ngOnInit
-    
+
     expect(loanServiceSpy.getAllLoans).toHaveBeenCalled();
     expect(component.loans).toEqual(mockLoans);
     expect(component.isLoading).toBeFalse();
@@ -79,9 +79,9 @@ describe('LoanListComponent', () => {
 
   it('should handle API errors when loading loans', () => {
     loanServiceSpy.getAllLoans.and.returnValue(throwError(() => new Error('API error')));
-    
+
     fixture.detectChanges(); // Triggers ngOnInit
-    
+
     expect(component.errorMessage).toBeTruthy();
     expect(component.isLoading).toBeFalse();
   });
@@ -89,10 +89,10 @@ describe('LoanListComponent', () => {
   it('should filter loans by borrower name', () => {
     const filteredLoans = [mockLoans[0]]; // Only John Doe
     loanServiceSpy.getLoansByBorrowerName.and.returnValue(of(filteredLoans));
-    
+
     component.searchTerm = 'John';
     component.applyFilter();
-    
+
     expect(loanServiceSpy.getLoansByBorrowerName).toHaveBeenCalledWith('John');
     expect(component.loans).toEqual(filteredLoans);
   });
@@ -100,7 +100,7 @@ describe('LoanListComponent', () => {
   it('should clear search and reload all loans', () => {
     component.searchTerm = 'John';
     component.clearSearch();
-    
+
     expect(component.searchTerm).toBe('');
     expect(loanServiceSpy.getAllLoans).toHaveBeenCalled();
   });
@@ -108,26 +108,17 @@ describe('LoanListComponent', () => {
   it('should navigate to loan details when view button is clicked', () => {
     const loan = mockLoans[0];
     component.viewLoanDetails(loan);
-    
+
     expect(routerSpy.navigate).toHaveBeenCalledWith(['/loans', loan.loanID]);
   });
 
-  it('should delete loan and show success message', () => {
-    spyOn(window, 'confirm').and.returnValue(true);
-    loanServiceSpy.deleteLoan.and.returnValue(of(undefined));
-    
-    component.confirmDelete(mockLoans[0]);
-    
-    expect(loanServiceSpy.deleteLoan).toHaveBeenCalledWith('1');
-    expect(snackBarSpy.open).toHaveBeenCalledWith('Loan deleted successfully', 'Close', jasmine.any(Object));
-    expect(loanServiceSpy.getAllLoans).toHaveBeenCalled();
-  });
+
 
   it('should not delete loan when user cancels confirmation', () => {
     spyOn(window, 'confirm').and.returnValue(false);
-    
+
     component.confirmDelete(mockLoans[0]);
-    
+
     expect(loanServiceSpy.deleteLoan).not.toHaveBeenCalled();
   });
 

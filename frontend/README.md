@@ -3,6 +3,61 @@
 ## Project Overview
 This Angular application serves as the frontend for a Loan Management API. It provides a responsive, user-friendly interface to manage loan data while implementing modern Angular patterns and security best practices.
 
+- [Loan Management System - Frontend Documentation](#loan-management-system---frontend-documentation)
+  - [Project Overview](#project-overview)
+  - [Technology Stack](#technology-stack)
+  - [Architecture Overview](#architecture-overview)
+  - [Technical Task Fulfillment](#technical-task-fulfillment)
+    - [API Integration](#api-integration)
+    - [User Interface Features](#user-interface-features)
+    - [UI Improvements](#ui-improvements)
+  - [Security Considerations](#security-considerations)
+  - [Core Files and Components](#core-files-and-components)
+    - [Configuration Files](#configuration-files)
+      - [`angular.json`](#angularjson)
+      - [`tsconfig.json` \& Related Files](#tsconfigjson--related-files)
+      - [`package.json`](#packagejson)
+      - [`Dockerfile`](#dockerfile)
+      - [`nginx.conf`](#nginxconf)
+    - [Core Application Files](#core-application-files)
+      - [`src/main.ts`](#srcmaints)
+      - [`src/app/app.config.ts`](#srcappappconfigts)
+      - [`src/app/app.routes.ts`](#srcappapproutests)
+      - [`src/app/app.component.ts`](#srcappappcomponentts)
+    - [Models and Services](#models-and-services)
+      - [`src/app/models/loan.model.ts`](#srcappmodelsloanmodelts)
+      - [`src/app/services/loan.service.ts`](#srcappservicesloanservicets)
+    - [Feature Components](#feature-components)
+      - [Nav Header Component](#nav-header-component)
+      - [Loan List Component](#loan-list-component)
+      - [Loan Form Component](#loan-form-component)
+      - [Loan Detail Component](#loan-detail-component)
+    - [Environment Configuration](#environment-configuration)
+      - [`src/environments/*`](#srcenvironments)
+  - [Design Patterns Used](#design-patterns-used)
+    - [Reactive Forms](#reactive-forms)
+    - [Observable Pattern](#observable-pattern)
+    - [Container/Presentation Pattern](#containerpresentation-pattern)
+    - [Standalone Components](#standalone-components)
+  - [Styling Approach](#styling-approach)
+    - [SCSS Architecture](#scss-architecture)
+    - [Responsive Design](#responsive-design)
+  - [Testing Documentation](#testing-documentation)
+    - [Testing Framework](#testing-framework)
+    - [Test Coverage](#test-coverage)
+    - [Core Test Specifications](#core-test-specifications)
+      - [NavHeaderComponent Tests](#navheadercomponent-tests)
+      - [LoanListComponent Tests](#loanlistcomponent-tests)
+      - [LoanFormComponent Tests](#loanformcomponent-tests)
+      - [LoanService Tests](#loanservice-tests)
+      - [App Routes Tests](#app-routes-tests)
+    - [Running Tests](#running-tests)
+  - [Docker Deployment](#docker-deployment)
+  - [Development Workflow](#development-workflow)
+  - [Potential Improvements](#potential-improvements)
+  - [Project Structure](#project-structure)
+
+
 ## Technology Stack
 - **Angular 19.1.7** - Latest version with performance improvements
 - **Angular Material** - For modern, accessible UI components
@@ -173,6 +228,66 @@ Modern Angular pattern used to reduce bundle size and improve modularity.
 - Mobile-first approach
 - Flexbox and Grid for layouts
 - Material breakpoints for consistent responsiveness
+
+---------------
+
+## Testing Documentation
+
+### Testing Framework
+- **Jasmine 4.6.1** - Used as the primary testing framework
+- **Karma 6.4.4** - Test runner for executing tests in browser environments
+
+### Test Coverage
+The application has moderate test coverage with 27 test specifications, all passing successfully. Tests are organized by component and verify that the relevant part of the application meets the requirements specified in the technical task.
+
+### Core Test Specifications
+
+#### NavHeaderComponent Tests
+- Verify component creation
+- Confirm brand link navigates to home
+- Validate "View Loans" navigation link functionality
+- Ensure active class is applied correctly when route is active
+
+#### LoanListComponent Tests
+- Verify component creation
+- Handle API errors during loan loading
+- Properly clear search and reload all loans
+- Load loans on initialization
+- Navigate to loan details when view button is clicked
+- Filter loans by borrower name
+- Display deletion confirmation dialog
+- Format currency correctly
+
+#### LoanFormComponent Tests
+- Navigate back to loans list when cancel is clicked
+- Verify component creation
+- Initialize with an empty form
+- Require funding amount greater than zero
+- Require borrower name
+
+#### LoanService Tests
+- Service should be created
+- Handle errors when the API fails
+- Delete a loan via DELETE method
+- Retrieve all loans via GET
+- Retrieve a loan by ID via GET
+
+#### App Routes Tests
+- Redirect unknown routes to loans list
+- Contain route to loan details
+- Contain empty path to loans
+- Contain route to loan list
+- Contain route to create loan
+
+### Running Tests
+To run the tests locally:
+```bash
+# Navigate to the frontend directory
+cd frontend
+
+# Run tests with Karma
+npm test
+```
 
 ## Docker Deployment
 

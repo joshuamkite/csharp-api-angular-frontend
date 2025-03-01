@@ -34,7 +34,6 @@
     <div *ngIf="loans.length === 0" class="no-data-container">
       <mat-icon>info</mat-icon>
       <p>No loans found</p>
-      <button mat-raised-button color="primary" routerLink="/loans/new">Create New Loan</button>
     </div>
 
     <table mat-table [dataSource]="loans" *ngIf="loans.length > 0" class="mat-elevation-z8">
