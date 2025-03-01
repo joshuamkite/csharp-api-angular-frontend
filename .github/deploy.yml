@@ -1,0 +1,51 @@
+name: Deploy Loan Management System
+
+on:
+  workflow_run:
+    workflows: ["Loan Management API CI/CD", "Loan Management Frontend CI/CD"]
+    types:
+      - completed
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    # Only run if both API and Frontend workflows succeeded
+    if: ${{ github.event.workflow_run.conclusion == 'success' || github.event_name == 'workflow_dispatch' }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download API Docker image
+        uses: actions/download-artifact@v4
+        with:
+          name: loan-management-api-image
+          path: ./api-image
+
+      - name: Download Frontend Docker image
+        uses: actions/download-artifact@v4
+        with:
+          name: loan-management-frontend-image
+          path: ./frontend-image
+
+      - name: Load Docker images
+        run: |
+          docker load < ./api-image/loan-management-api.tar
+          docker load < ./frontend-image/loan-management-frontend.tar
+
+      # Here you would add steps to deploy the images to your hosting environment
+      # For example, pushing to a container registry, deploying to Kubernetes, etc.
+
+      - name: Tag Docker images for registry
+        run: |
+          docker tag loan-management-api:${{ github.sha }} loan-management-api:latest
+          docker tag loan-management-frontend:${{ github.sha }} loan-management-frontend:latest
+
+      # Example deployment step (replace with your actual deployment logic)
+      - name: Deploy (Example)
+        run: |
+          echo "Deployment would happen here"
+          echo "For example, pushing to a registry or updating a K8s cluster"
+          # docker push your-registry/loan-management-api:latest
+          # docker push your-registry/loan-management-frontend:latest
