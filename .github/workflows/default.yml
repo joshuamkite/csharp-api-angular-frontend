@@ -59,7 +59,6 @@ jobs:
     with:
       working-directory: './api'
       ecr-repository: 'loan-management-api'
-      aws-region: ${{ vars.aws_region }}
     secrets:
       role-to-assume: ${{ secrets.aws_role_to_assume }}
 
@@ -74,6 +73,5 @@ jobs:
     with:
       working-directory: './frontend'
       ecr-repository: 'loan-management-frontend'
-      aws-region: ${{ vars.aws_region }}
     secrets:
       role-to-assume: ${{ secrets.aws_role_to_assume }}
