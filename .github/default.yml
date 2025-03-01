@@ -78,7 +78,7 @@ jobs:
           # Shutdown containers after testing
           docker-compose down
 
-      # Here you would add steps to push images to your registry
+      # Here you would add steps to push images to your registry, e.g. ECR
       # Example (commented out):
       # - name: Login to container registry
       #   uses: docker/login-action@v2
