@@ -1,3 +1,29 @@
+# AWS ECR Public Gallery Terraform Module
+
+This Terraform module sets up Amazon ECR Public Gallery repositories with GitHub Actions integration for CI/CD. It enables public access to container images without requiring authentication for pulls, while securing the push process with GitHub Actions OIDC.
+
+## Features
+
+- Creates Amazon ECR Public Gallery repositories
+- Sets up GitHub Actions OIDC authentication
+- Configures IAM roles and policies for secure pushing
+- Outputs repository URLs and registry alias for GitHub Actions workflows
+
+## Public Access
+
+Images in ECR Public Gallery can be pulled without authentication:
+
+```bash
+docker pull public.ecr.aws/{registry-alias}/{repository-name}:latest
+```
+
+## Notes
+
+- ECR Public Gallery is only available in the `us-east-1` region
+- Authentication is still required for pushing images
+- GitHub Actions OIDC is recommended for secure CI/CD workflows
+
+
 ## Requirements
 
 | Name | Version |
