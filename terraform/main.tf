@@ -1,3 +1,4 @@
+
 # OIDC Provider for GitHub Actions
 resource "aws_iam_openid_connect_provider" "github_actions" {
   url            = "https://token.actions.githubusercontent.com"
@@ -41,25 +42,19 @@ data "aws_iam_policy_document" "github_actions_assume_role" {
 resource "aws_iam_role" "github_actions_ecr" {
   name               = "GitHubActionsECRRole"
   assume_role_policy = data.aws_iam_policy_document.github_actions_assume_role.json
-
-  tags = {
-    Name = "github-actions-ecr-role"
-  }
 }
 
-# ECR Repositories
-resource "aws_ecr_repository" "repositories" {
+# ECR Public Repositories
+resource "aws_ecrpublic_repository" "repositories" {
   for_each = toset(var.ecr_repositories)
+  provider = aws.us_east_1
 
-  name                 = each.key
-  image_tag_mutability = "MUTABLE"
+  repository_name = each.key
 
-  image_scanning_configuration {
-    scan_on_push = true
-  }
-
-  encryption_configuration {
-    encryption_type = "AES256"
+  catalog_data {
+    description       = "${each.key} container repository"
+    architectures     = ["x86-64"]
+    operating_systems = ["Linux"]
   }
 
   tags = {
@@ -67,29 +62,28 @@ resource "aws_ecr_repository" "repositories" {
   }
 }
 
-# ECR Policy document for GitHub Actions access
+# ECR Public Policy document for GitHub Actions access
 data "aws_iam_policy_document" "ecr_access" {
   statement {
     effect = "Allow"
     actions = [
-      "ecr:GetDownloadUrlForLayer",
-      "ecr:BatchCheckLayerAvailability",
-      "ecr:BatchGetImage",
-      "ecr:BatchDeleteImage",
-      "ecr:CompleteLayerUpload",
-      "ecr:InitiateLayerUpload",
-      "ecr:PutImage",
-      "ecr:UploadLayerPart",
-      "ecr:DescribeImages",
-      "ecr:DescribeRepositories",
-      "ecr:ListImages"
+      "ecr-public:BatchCheckLayerAvailability",
+      "ecr-public:CompleteLayerUpload",
+      "ecr-public:InitiateLayerUpload",
+      "ecr-public:PutImage",
+      "ecr-public:UploadLayerPart",
+      "ecr-public:DescribeImages",
+      "ecr-public:DescribeRepositories",
+      "ecr-public:ListImages",
+      "ecr-public:GetRepositoryCatalogData",
+      "ecr-public:GetRepositoryPolicy"
     ]
-    resources = [for repo in aws_ecr_repository.repositories : repo.arn]
+    resources = [for repo in aws_ecrpublic_repository.repositories : repo.arn]
   }
 
   statement {
     effect    = "Allow"
-    actions   = ["ecr:GetAuthorizationToken"]
+    actions   = ["ecr-public:GetAuthorizationToken", "sts:GetServiceBearerToken"]
     resources = ["*"]
   }
 }
@@ -97,7 +91,7 @@ data "aws_iam_policy_document" "ecr_access" {
 # IAM Policy for ECR access
 resource "aws_iam_policy" "ecr_access" {
   name        = "GitHubActionsECRAccess"
-  description = "Policy to allow GitHub Actions to push images to ECR"
+  description = "Policy to allow GitHub Actions to push images to ECR Public"
   policy      = data.aws_iam_policy_document.ecr_access.json
 }
 
@@ -105,34 +99,4 @@ resource "aws_iam_policy" "ecr_access" {
 resource "aws_iam_role_policy_attachment" "github_actions_ecr_policy" {
   role       = aws_iam_role.github_actions_ecr.name
   policy_arn = aws_iam_policy.ecr_access.arn
-}
-
-# Policy document for public access to ECR repositories
-data "aws_iam_policy_document" "ecr_public_access" {
-  statement {
-    sid    = "AllowPublicPull"
-    effect = "Allow"
-
-    principals {
-      type        = "*"
-      identifiers = ["*"]
-    }
-
-    actions = [
-      "ecr:GetDownloadUrlForLayer",
-      "ecr:BatchGetImage",
-      "ecr:BatchCheckLayerAvailability",
-      "ecr:DescribeImages",
-      "ecr:DescribeRepositories",
-      "ecr:ListImages"
-    ]
-  }
-}
-
-# Apply public access policy to each repository
-resource "aws_ecr_repository_policy" "public_access" {
-  for_each = toset(var.ecr_repositories)
-
-  repository = aws_ecr_repository.repositories[each.key].name
-  policy     = data.aws_iam_policy_document.ecr_public_access.json
 }

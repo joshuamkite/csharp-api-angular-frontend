@@ -15,3 +15,11 @@ provider "aws" {
   }
 }
 
+# Define a specific provider for us-east-1 region (required for CloudFront certificates)
+provider "aws" {
+  alias  = "us_east_1"
+  region = "us-east-1"
+  default_tags {
+    tags = var.default_tags
+  }
+}

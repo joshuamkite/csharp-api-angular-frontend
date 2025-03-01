@@ -9,18 +9,28 @@ variable "default_tags" {
   default     = {}
 }
 
-
+variable "ecr_repositories" {
+  description = "List of ECR repository names to create"
+  type        = list(string)
+  default     = ["loan-management-api", "loan-management-frontend"]
+}
 
 variable "github_repo" {
   description = "GitHub repository (format: username/repo-name)"
   type        = string
 }
 
-variable "ecr_repositories" {
-  description = "List of ECR repository names to create"
-  type        = list(string)
-  default     = ["loan-management-api", "loan-management-frontend"]
+variable "domain_name" {
+  description = "Domain name for Route53 hosted zone (e.g., example.com)"
+  type        = string
 }
+
+variable "ecr_subdomain" {
+  description = "Subdomain for ECR repositories (e.g., docker-images)"
+  type        = string
+}
+
+
 
 variable "s3_backend_config" {
   description = "Configuration for the S3 backend"

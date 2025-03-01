@@ -10,6 +10,6 @@ output "github_actions_role_arn" {
 }
 
 output "ecr_repository_urls" {
-  value       = { for name, repo in aws_ecr_repository.repositories : name => repo.repository_url }
-  description = "ECR Repository URLs"
+  value       = { for name, repo in aws_ecrpublic_repository.repositories : name => repo.repository_uri }
+  description = "ECR Public Repository URLs"
 }
