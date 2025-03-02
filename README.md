@@ -32,7 +32,6 @@ A full-stack containerized application developed in response to a technical chal
   - [Ingress Configuration](#ingress-configuration)
     - [Path-Based Routing](#path-based-routing)
     - [Health Checks](#health-checks)
-    - [Key Annotations](#key-annotations)
     - [Environment URLs](#environment-urls)
     - [Implementation Details](#implementation-details)
 
@@ -260,19 +259,6 @@ The ALB is configured with health checks:
 - Custom health check path for Swagger endpoints
 - Success codes configured to accept 200-399 response codes
 - Health check intervals set to 30 seconds with 5-second timeouts
-
-### Key Annotations
-
-The ingress resource uses the following AWS ALB annotations:
-
-```yaml
-alb.ingress.kubernetes.io/scheme: internet-facing
-alb.ingress.kubernetes.io/target-type: ip
-alb.ingress.kubernetes.io/healthcheck-path: "/swagger/index.html"
-alb.ingress.kubernetes.io/success-codes: "200-399"
-alb.ingress.kubernetes.io/healthcheck-timeout-seconds: "5"
-alb.ingress.kubernetes.io/healthcheck-interval-seconds: "30"
-```
 
 ### Environment URLs
 
