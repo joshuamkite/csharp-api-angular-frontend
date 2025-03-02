@@ -115,7 +115,7 @@ For more information about the frontend, see the [Frontend README](./frontend/RE
 This project includes complete containerization with Docker and Kubernetes deployment:
 
 - Dockerfiles for both API and Website components
-- Docker images published to AWS ECR Public Gallery
+- Docker images published to AWS ECR Public Gallery - see [Terraform README](./terraform/README.md)
 - Kubernetes configuration via Helm charts
 
 ### Implemented Bonus Features:
