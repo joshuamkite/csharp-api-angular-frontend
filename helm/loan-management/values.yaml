@@ -73,18 +73,9 @@ ingress:
     alb.ingress.kubernetes.io/scheme: internet-facing
     alb.ingress.kubernetes.io/target-type: ip
 
-    # Set health check configuration per target group
+    # Use a single health check setting for speed and simplicity
+    alb.ingress.kubernetes.io/healthcheck-path: "/swagger/index.html"
     alb.ingress.kubernetes.io/healthcheck-protocol: HTTP
-
-    # Health check for API endpoints (/api*)
-    alb.ingress.kubernetes.io/conditions.api-group: '[{"field":"path-pattern","pathPatternConfig":{"values":["/api*"]}}]'
-    alb.ingress.kubernetes.io/healthcheck-path.api-group: "/health"
-
-    # Health check for frontend (everything else)
-    alb.ingress.kubernetes.io/conditions.frontend-group: '[{"field":"path-pattern","pathPatternConfig":{"values":["/*"]}}]'
-    alb.ingress.kubernetes.io/healthcheck-path.frontend-group: "/"
-
-    # Global health check settings
     alb.ingress.kubernetes.io/success-codes: "200-399"
     alb.ingress.kubernetes.io/healthcheck-timeout-seconds: "5"
     alb.ingress.kubernetes.io/healthcheck-interval-seconds: "30"
@@ -92,11 +83,15 @@ ingress:
   hosts:
     - host: "" # Leave empty for the default host
       paths:
-        - path: /
+        - path: /swagger
           pathType: Prefix
-          serviceName: loan-management-frontend
-          servicePort: 80
+          serviceName: loan-management-api
+          servicePort: 8080
         - path: /api
           pathType: Prefix
           serviceName: loan-management-api
           servicePort: 8080
+        - path: /
+          pathType: Prefix
+          serviceName: loan-management-frontend
+          servicePort: 80
