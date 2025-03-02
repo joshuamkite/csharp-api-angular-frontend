@@ -28,8 +28,8 @@ A full-stack containerized application developed in response to a technical chal
     - [Frontend Tests](#frontend-tests)
   - [Security Considerations](#security-considerations)
   - [Implementation Highlights](#implementation-highlights)
-- [Helm](#helm)
-  - [Ingress Configuration](#ingress-configuration)
+  - [Helm](#helm)
+    - [Ingress Configuration](#ingress-configuration)
     - [Path-Based Routing](#path-based-routing)
     - [Health Checks](#health-checks)
     - [Environment URLs](#environment-urls)
@@ -238,9 +238,9 @@ For more details on testing, see the [API README](./api/README.md) and [Frontend
   - AWS Application Load Balancer for internet exposure
   - Health checks and resource management
 
-# Helm
+## Helm
 
-## Ingress Configuration
+### Ingress Configuration
 
 The application is exposed using AWS Application Load Balancer (ALB) through Kubernetes ingress resources. The ingress is configured to route traffic to the frontend and API services based on URL paths.
 
