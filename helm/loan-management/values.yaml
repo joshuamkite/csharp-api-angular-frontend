@@ -16,12 +16,9 @@ api:
     tag: latest
     pullPolicy: IfNotPresent
   service:
-    type: LoadBalancer
+    type: ClusterIP
     port: 8080
     targetPort: 8080
-    annotations:
-      service.beta.kubernetes.io/aws-load-balancer-type: "nlb"
-      service.beta.kubernetes.io/aws-load-balancer-internal: "false"
   resources:
     limits:
       cpu: 500m
@@ -54,12 +51,9 @@ frontend:
     tag: latest
     pullPolicy: IfNotPresent
   service:
-    type: LoadBalancer
+    type: ClusterIP
     port: 80
     targetPort: 8080
-    annotations:
-      service.beta.kubernetes.io/aws-load-balancer-type: "nlb"
-      service.beta.kubernetes.io/aws-load-balancer-internal: "false"
   resources:
     limits:
       cpu: 300m
@@ -67,16 +61,36 @@ frontend:
     requests:
       cpu: 100m
       memory: 128Mi
+  env:
+    - name: API_URL
+      value: "/api"
 
-# Ingress is disabled by default as we're using LoadBalancer
 ingress:
-  enabled: false
-  className: "nginx"
+  enabled: true
+  className: "alb"
   annotations:
-    kubernetes.io/ingress.class: nginx
-    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    kubernetes.io/ingress.class: alb
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+
+    # Set health check configuration per target group
+    alb.ingress.kubernetes.io/healthcheck-protocol: HTTP
+
+    # Health check for API endpoints (/api*)
+    alb.ingress.kubernetes.io/conditions.api-group: '[{"field":"path-pattern","pathPatternConfig":{"values":["/api*"]}}]'
+    alb.ingress.kubernetes.io/healthcheck-path.api-group: "/health"
+
+    # Health check for frontend (everything else)
+    alb.ingress.kubernetes.io/conditions.frontend-group: '[{"field":"path-pattern","pathPatternConfig":{"values":["/*"]}}]'
+    alb.ingress.kubernetes.io/healthcheck-path.frontend-group: "/"
+
+    # Global health check settings
+    alb.ingress.kubernetes.io/success-codes: "200-399"
+    alb.ingress.kubernetes.io/healthcheck-timeout-seconds: "5"
+    alb.ingress.kubernetes.io/healthcheck-interval-seconds: "30"
+
   hosts:
-    - host: loan-management.example.com
+    - host: "" # Leave empty for the default host
       paths:
         - path: /
           pathType: Prefix
