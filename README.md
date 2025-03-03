@@ -22,18 +22,17 @@ A full-stack containerized application developed in response to a technical chal
   - [Production Deployment](#production-deployment)
     - [Prerequisites](#prerequisites)
     - [Deploying with Helm (Technical Task 3 Bonus)](#deploying-with-helm-technical-task-3-bonus)
+    - [Ingress Configuration](#ingress-configuration)
+    - [Path-Based Routing](#path-based-routing)
+    - [Health Checks](#health-checks)
+    - [Environment URLs](#environment-urls)
+    - [Implementation Details](#implementation-details)
     - [Accessing the Deployed Application](#accessing-the-deployed-application)
   - [Testing](#testing)
     - [Backend Tests](#backend-tests)
     - [Frontend Tests](#frontend-tests)
   - [Security Considerations](#security-considerations)
   - [Implementation Highlights](#implementation-highlights)
-  - [Helm](#helm)
-    - [Ingress Configuration](#ingress-configuration)
-    - [Path-Based Routing](#path-based-routing)
-    - [Health Checks](#health-checks)
-    - [Environment URLs](#environment-urls)
-    - [Implementation Details](#implementation-details)
 
 
 ## Technical Challenge Overview
@@ -46,7 +45,7 @@ This project implements the solution to a three-part technical challenge:
 
 ## Also included
 
-1. ECR public gallery for container images
+1. ECR public gallery for container images (via Terraform)
 2. GitHub Actions for CI/CD
 3. **Tests:** Comprehensive tests for frontend and backend - both locally and in GitHub actions
 
@@ -54,6 +53,7 @@ This project implements the solution to a three-part technical challenge:
 
 ```
 .
+├── .github/workflows/   # GitHub actions to test, build and publish containers to ECR public gallery
 ├── api/                 # .NET Core 9.0 Backend API (Technical Task 1)
 ├── frontend/            # Angular Frontend Application (Technical Task 2)
 ├── helm/                # Kubernetes Helm Charts (Technical Task 3 - Bonus)
@@ -65,7 +65,7 @@ This project implements the solution to a three-part technical challenge:
 
 ## Technical Task 1: Web API
 
-The backend API implements all required features using .NET Core 9.0:
+The backend API implements all required features using C#/ .NET Core 9.0:
 
 ### Required API Properties:
 - LoanID
@@ -90,12 +90,12 @@ For detailed API documentation, see the [API README](./api/README.md).
 
 ## Technical Task 2: Single Page Website
 
-The frontend Angular application allows users to interact with all API methods:
+The frontend Angular application allows users to interact with all specified API methods:
 
 - Form for adding new loans
 - Display of all loans
 - Search functionality by Borrower Name and LoanID
-- Delete functionality for loans
+- Delete functionality for individual loans
 
 ### Implemented Bonus Features:
 - Tech Stack: Angular
@@ -104,8 +104,6 @@ The frontend Angular application allows users to interact with all API methods:
 ### Also included
 - GitHub actions build 
 - Local and CI/CD test suite
-
-> **Note:** User authentication with Auth0 was not implemented due to time constraints.
 
 For more information about the frontend, see the [Frontend README](./frontend/README.md).
 
@@ -118,14 +116,14 @@ This project includes complete containerization with Docker and Kubernetes deplo
 - Kubernetes configuration via Helm charts
 
 ### Implemented Bonus Features:
-- Docker images pushed to AWS ECR Public Gallery
+- Docker images pushed to AWS ECR Public Gallery for public access
 - Kubernetes deployment configured for AWS EKS
 - Application exposed to internet via AWS ALB
 - Helm charts for managing Kubernetes releases
 
 ## Local Development
 
-For local development, Docker Compose is provided to run both the API and frontend services:
+For local development, Docker Compose is provided to run both the API and frontend services together:
 
 ```bash
 # Start all services
@@ -133,7 +131,6 @@ docker compose up -d
 
 # Access the services
 Frontend: http://localhost:80
-API: http://localhost:9090/api/loans
 Swagger: http://localhost:9090/swagger/index.html
 ```
 
@@ -154,7 +151,7 @@ public.ecr.aws/o7k2q9z1/loan-management-frontend:latest
 
 ### Infrastructure Management
 
-- **Terraform**: The Terraform configuration for AWS ECR Public Gallery is designed to be run locally, not through GitHub Actions. This provides control over infrastructure deployment and avoids storing sensitive credentials in the CI pipeline.
+- **Terraform**: The Terraform configuration for AWS ECR Public Gallery is designed to be run locally, not through GitHub Actions.
 
 - **Helm Charts**: The Helm chart is included in the repository for deployment flexibility but is not published to a Helm registry.
 
@@ -162,7 +159,7 @@ public.ecr.aws/o7k2q9z1/loan-management-frontend:latest
 
 ### Prerequisites
 
-For production deployment, follow the instructions in the [eks-argocd-crossplane](https://github.com/joshuamkite/eks-argocd-crossplane) repository up to and including the "Installing the Monitoring ApplicationSet" step. This deploys a small EKS cluster with Terraform, and sets up Prometheus, Grafana and AWS Load Balancer Controller (required for ingress of `loan-management` stack). This deployment applies NACLs to restrict access to approved CIDRs.
+For production deployment, follow the instructions in the [eks-argocd-crossplane](https://github.com/joshuamkite/eks-argocd-crossplane) repository up to and including the "Installing the Monitoring ApplicationSet" step. This deploys a small EKS cluster with Terraform, and sets up Prometheus, Grafana and AWS Load Balancer Controller (required for ingress of `loan-management` stack). The deployment applies NACLs to restrict access to approved CIDRs.
 
 ### Deploying with Helm (Technical Task 3 Bonus)
 
@@ -182,11 +179,45 @@ This will deploy:
 - The frontend service
 - An AWS Application Load Balancer with appropriate routing
 
+### Ingress Configuration
+
+The application is exposed using AWS Application Load Balancer (ALB) through Kubernetes ingress resources. The ingress is configured to route traffic to the frontend and API services based on URL paths.
+
+### Path-Based Routing
+
+| Path Pattern | Service |
+|--------------|---------|
+| `/swagger/*` | loan-management-api |
+| `/*` | loan-management-frontend |
+
+### Health Checks
+
+The ALB is configured with health checks:
+
+- HTTP protocol for all services
+- Custom health check path for Swagger endpoints
+- Success codes configured to accept 200-399 response codes
+- Health check intervals set to 30 seconds with 5-second timeouts
+
+### Environment URLs
+
+- Frontend UI: `http://<load-balancer-hostname>/`
+- Swagger UI: `http://<load-balancer-hostname>/swagger/index.html`
+
+### Implementation Details
+
+- The load balancer is configured as internet-facing
+- Target groups use IP-based routing
+
 ### Accessing the Deployed Application
+
+**It may take a few minutes for all services to deploy and be ready**
 
 Once deployed, the application will be available at:
 - Frontend UI: `http://<load-balancer-hostname>/`
 - Swagger UI: `http://<load-balancer-hostname>/swagger/index.html`
+
+Whilst one normally would not make the `swagger` endpoint available, the brief specified `Exposing the Application to the internet.` Since we are in development and the stack is run either locally or with restrictive network policies, this is not inappropriate.
 
 ## Testing
 
@@ -237,35 +268,3 @@ For more details on testing, see the [API README](./api/README.md) and [Frontend
   - Kubernetes configuration via Helm charts
   - AWS Application Load Balancer for internet exposure
   - Health checks and resource management
-
-## Helm
-
-### Ingress Configuration
-
-The application is exposed using AWS Application Load Balancer (ALB) through Kubernetes ingress resources. The ingress is configured to route traffic to the frontend and API services based on URL paths.
-
-### Path-Based Routing
-
-| Path Pattern | Service |
-|--------------|---------|
-| `/swagger/*` | loan-management-api |
-| `/*` | loan-management-frontend |
-
-### Health Checks
-
-The ALB is configured with health checks:
-
-- HTTP protocol for all services
-- Custom health check path for Swagger endpoints
-- Success codes configured to accept 200-399 response codes
-- Health check intervals set to 30 seconds with 5-second timeouts
-
-### Environment URLs
-
-- Frontend UI: `http://<load-balancer-hostname>/`
-- Swagger UI: `http://<load-balancer-hostname>/swagger/index.html`
-
-### Implementation Details
-
-- The load balancer is configured as internet-facing
-- Target groups use IP-based routing

@@ -24,6 +24,8 @@ A RESTful Web API for managing loan information, created as part of a coding cha
 4. **Additional API Methods:**
    - GET - Get a Loan by LoanID
    - GET - Get all loans
+5. **Tests**
+   - The solution includes a comprehensive test suite using xUnit.
 
 ## Technical Implementation Details
 
