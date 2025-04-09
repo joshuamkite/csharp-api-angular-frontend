@@ -1,5 +1,8 @@
 # Loan Management System
 
+> [!NOTE]  
+> This repository is not maintained and package versions may be vulnerable
+
 A full-stack containerized application developed in response to a technical challenge for managing loan information, built with CSharp .NET Core 9.0 API and Angular frontend. Dockerised for local development and deployment to kubernetes.
 
 - [Loan Management System](#loan-management-system)
